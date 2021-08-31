@@ -76,15 +76,15 @@ const readInput = async(message) => {
 }
 
 
-const listOfTodosToDelete = async(todos = []) => {
+const showCities = async(cities = []) => {
 
-    const choices = todos.map((todo, i) => {
+    const choices = cities.map((city, i) => {
 
         const index = `${i + 1}.`.green
 
         return {
-            value: todo.id,
-            name: `${index} ${todo.description}`,
+            value: city.id,
+            name: `${index} ${city.name}`,
         }
 
     });
@@ -98,7 +98,7 @@ const listOfTodosToDelete = async(todos = []) => {
         {
             type: 'list',
             name: 'id',
-            message: 'Delete',
+            message: 'select a place: ',
             choices: choices
         }
     ]
@@ -154,7 +154,7 @@ const showCheckListTodos = async(todos = []) => {
 module.exports = {inquirerMenu, 
     pause, 
     readInput, 
-    listOfTodosToDelete,
+    showCities,
     confirm,
     showCheckListTodos,
 }

@@ -1,4 +1,4 @@
-const {inquirerMenu, pause, readInput} = require('./helpers/inquirer');
+const {inquirerMenu, pause, readInput, showCities} = require('./helpers/inquirer');
 const Searches = require('./models/searches');
 require('dotenv').config();
 require('colors');
@@ -9,6 +9,8 @@ const main = async() =>{
 
     let answer;
 
+    
+
     do {
         
         answer = await inquirerMenu();
@@ -18,28 +20,43 @@ const main = async() =>{
                 console.log();
                 //Show message
                 const city = await readInput('Please type a city: ');
-                searches.findCity(city);
-
                 //Find city 
-
+                const cities  = await searches.findCity(city);
                 //choose a result 
+                const selectedID = await showCities(cities);
+                if(selectedID === '0') continue;
+
+                const selectedCity = cities.find((city)=> city.id === selectedID);
+
+                //save result in DB
+                searches.addToHistory(selectedCity.name);
 
                 //request weather
-
+                const weather = await searches.weatherByCoordenates(selectedCity.lat, selectedCity.lng);
                 // show the result
-                console.log('\nCity Information\n'.green);
-                console.log('City: ', );
-                console.log('Lat: ', );
-                console.log('Lng: ', );
-                console.log('Temp: ', );
-                console.log('Min: ', );
-                console.log('Max: ', );
+                console.clear();
+                console.log('\n======================'.green);
+                console.log('   City Information');
+                console.log('======================\n'.green);
+                console.log('City: ', selectedCity.name.green);
+                console.log('Lat: ', selectedCity.lat);
+                console.log('Lng: ', selectedCity.lng);
+                console.log('Weather: ', weather.weather.green);
+                console.log('Temp: ', weather.temp);
+                console.log('Min: ', weather.min);
+                console.log('Max: ', weather.max);
 
 
             break;
         
-            default:
-                break;
+            case 2:
+            console.log();
+            searches.capitalizedHistory.forEach((city, i) =>{
+                const index = `${i + 1}.`.green;
+                console.log(`${index} ${city}`);
+            });
+
+            break;
         }
 
 
